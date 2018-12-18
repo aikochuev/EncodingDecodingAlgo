@@ -1,14 +1,1 @@
-﻿  pch.cpp
-  bitarray.cpp
-  bitfile.cpp
-c:\users\andrei.kochuev\documents\github\computergraphic\huffman\bitfile.cpp(872): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-c:\users\andrei.kochuev\documents\github\computergraphic\huffman\bitfile.cpp(1039): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-  canonical.cpp
-  huffman.cpp
-  huflocal.cpp
-  optlist.cpp
-  sample.cpp
-  Generating code
-  All 57 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
-  Finished generating code
-  Huffman.vcxproj -> C:\Users\andrei.kochuev\Documents\GitHub\ComputerGraphic\x64\Release\Huffman.exe
+﻿  Huffman.vcxproj -> C:\Users\andrei.kochuev\Documents\GitHub\EncodingDecodingAlgo\ComputerGraphic\x64\Release\Huffman.exe

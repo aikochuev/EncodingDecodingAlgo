@@ -1,10 +1,10 @@
 #include "pch.h"
+#include "optlist.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 #include "huffman.h"
-#include "optlist.h"
 
 typedef enum
 {

@@ -45,7 +45,8 @@ bit_array_t* BitArrayCreate(unsigned int bits)
     ba->numBits = bits;
 
     /* allocate array */
-    ba->array = new unsigned char();
+    ba->array = (unsigned char *)malloc(sizeof(unsigned char) *
+        BITS_TO_CHARS(bits));
     return ba;
 }
 

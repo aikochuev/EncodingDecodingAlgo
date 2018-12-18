@@ -1,0 +1,4 @@
+﻿  bitfile.cpp
+c:\users\andrei.kochuev\documents\github\encodingdecodingalgo\computergraphic\arithmeticсoding\bitfile.cpp(523): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+c:\users\andrei.kochuev\documents\github\encodingdecodingalgo\computergraphic\arithmeticсoding\bitfile.cpp(641): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+  ArithmeticСoding.vcxproj -> C:\Users\andrei.kochuev\Documents\GitHub\EncodingDecodingAlgo\ComputerGraphic\x64\Debug\ArithmeticСoding.exe

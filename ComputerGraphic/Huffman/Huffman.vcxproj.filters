@@ -47,13 +47,13 @@
     <ClCompile Include="huflocal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="optlist.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="sample.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="huffman.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="optlist.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
