@@ -15,25 +15,17 @@ typedef enum
     mode_decode_packbits = (1 << 2) | (1 << 1)
 } mode_t;
 
-static void ShowUsage(const char *progName);
+static void ShowUsage(const char* progName);
 
-int main(int argc, const char* argv[])
+void main(int argc, const char* argv[])
 {
-    FILE *inFile;
-    FILE *outFile;
-    int mode;
-    int result;
-
-    /* initialize data */
-    inFile = NULL;
-    outFile = NULL;
-    mode = mode_none;
-
-    /* parse command line */
+    FILE* inFile = nullptr;
+    FILE* outFile = nullptr;
+    
     option_t* optList = GetOptList(argc, argv, "cvdni:o:h?");
     option_t* thisOpt = optList;
-
-    while (thisOpt != NULL)
+    int mode = mode_none;
+    while (thisOpt != nullptr)
     {
         switch(thisOpt->option)
         {
@@ -50,58 +42,46 @@ int main(int argc, const char* argv[])
                 break;
 
             case 'i':       /* input file name */
-                if (inFile != NULL)
+                if (inFile != nullptr)
                 {
                     fprintf(stderr, "Multiple input files not allowed.\n");
                     fclose(inFile);
 
-                    if (outFile != NULL)
-                    {
+                    if (outFile != nullptr)
                         fclose(outFile);
-                    }
 
                     FreeOptList(optList);
-                    return EINVAL;
                 }
-                else if ((inFile = fopen(thisOpt->argument, "rb")) == NULL)
+                else if ((inFile = fopen(thisOpt->argument, "rb")) == nullptr)
                 {
                     perror("Opening Input File");
 
-                    if (outFile != NULL)
-                    {
+                    if (outFile != nullptr)
                         fclose(outFile);
-                    }
 
                     FreeOptList(optList);
-                    return errno;
                 }
                 break;
 
             case 'o':       /* output file name */
-                if (outFile != NULL)
+                if (outFile != nullptr)
                 {
                     fprintf(stderr, "Multiple output files not allowed.\n");
                     fclose(outFile);
 
-                    if (inFile != NULL)
-                    {
+                    if (inFile != nullptr)
                         fclose(inFile);
-                    }
 
                     FreeOptList(optList);
-                    return EINVAL;
                 }
-                else if ((outFile = fopen(thisOpt->argument, "wb")) == NULL)
+                else if ((outFile = fopen(thisOpt->argument, "wb")) == nullptr)
                 {
                     perror("Opening Output File");
 
-                    if (inFile != NULL)
-                    {
+                    if (inFile != nullptr)
                         fclose(inFile);
-                    }
 
                     FreeOptList(optList);
-                    return errno;
                 }
                 break;
 
@@ -109,68 +89,54 @@ int main(int argc, const char* argv[])
             case '?':
                 ShowUsage(argv[0]);
                 FreeOptList(optList);
-                return 0;
         }
 
         optList = thisOpt->next;
-        free(thisOpt);
+        delete thisOpt;
         thisOpt = optList;
     }
 
     /* validate command line */
-    if (inFile == NULL)
+    if (inFile == nullptr)
     {
         fprintf(stderr, "Input file must be provided\n");
         ShowUsage(argv[0]);
 
-        if (outFile != NULL)
-        {
-            free(outFile);
-        }
-
-        return EINVAL;
+        if (outFile != nullptr)
+            delete outFile;
     }
-    else if (outFile == NULL)
+    else if (outFile == nullptr)
     {
         fprintf(stderr, "Output file must be provided\n");
         ShowUsage(argv[0]);
-
-        if (inFile != NULL)
-        {
-            free(inFile);
-        }
-
-        return EINVAL;
+        delete inFile;
     }
 
-    /* we have valid parameters encode or decode */
     switch (mode)
     {
         case mode_encode_normal:
-            result = RleEncodeFile(inFile, outFile);
+            RleEncodeFile(inFile, outFile);
             break;
 
         case mode_decode_normal:
-            result = RleDecodeFile(inFile, outFile);
+            RleDecodeFile(inFile, outFile);
             break;
 
         case mode_encode_packbits:
-            result = VPackBitsEncodeFile(inFile, outFile);
+            VPackBitsEncodeFile(inFile, outFile);
             break;
 
         case mode_decode_packbits:
-            result = VPackBitsDecodeFile(inFile, outFile);
+            VPackBitsDecodeFile(inFile, outFile);
             break;
 
         default:
             fprintf(stderr, "Illegal encoding/decoding option\n");
             ShowUsage(argv[0]);
-            result = EINVAL;
     }
 
     fclose(inFile);
     fclose(outFile);
-    return result;
 }
 
 static void ShowUsage(const char *progName)

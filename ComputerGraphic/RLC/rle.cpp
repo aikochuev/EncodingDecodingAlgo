@@ -3,29 +3,25 @@
 #include <limits.h>
 #include <errno.h>
 
-int RleEncodeFile(FILE *inFile, FILE *outFile)
+int RleEncodeFile(FILE* inFile, FILE* outFile)
 {
-    int currChar;                       /* current characters */
-    int prevChar;                       /* previous characters */
-    unsigned char count;                /* number of characters in a run */
+    int currChar;
+    int prevChar;
+    unsigned char count;
 
-    /* validate input and output files */
-    if ((NULL == inFile) || (NULL == outFile))
+    if ((nullptr == inFile) || (nullptr == outFile))
     {
         errno = ENOENT;
         return -1;
     }
 
-    /* encode inFile */
-    prevChar = EOF;     /* force next char to be different */
+    prevChar = EOF;
     count = 0;
 
-    /* read input until there's nothing left */
     while ((currChar = fgetc(inFile)) != EOF)
     {
         fputc(currChar, outFile);
 
-        /* check for run */
         if (currChar == prevChar)
         {
             /* we have a run.  count run length */
@@ -76,21 +72,18 @@ int RleEncodeFile(FILE *inFile, FILE *outFile)
 
 int RleDecodeFile(FILE *inFile, FILE *outFile)
 {
-    int currChar;                       /* current characters */
-    int prevChar;                       /* previous characters */
-    unsigned char count;                /* number of characters in a run */
+    int currChar;
+    int prevChar;
+    unsigned char count;
 
-    /* validate input and output files */
-    if ((NULL == inFile) || (NULL == outFile))
+    if ((nullptr == inFile) || (nullptr == outFile))
     {
         errno = ENOENT;
         return -1;
     }
 
-    /* decode inFile */
-    prevChar = EOF;     /* force next char to be different */
+    prevChar = EOF;
 
-    /* read input until there's nothing left */
     while ((currChar = fgetc(inFile)) != EOF)
     {
         fputc(currChar, outFile);

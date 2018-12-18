@@ -47,17 +47,17 @@ bit_file_t *MakeBitFile(FILE *stream, const BF_MODES mode)
 {
     bit_file_t *bf;
 
-    if (stream == NULL)
+    if (stream == nullptr)
     {
         /* can't wrapper empty steam */
         errno = EBADF;
-        bf = NULL;
+        bf = nullptr;
     }
     else
     {
         bf = (bit_file_t *)malloc(sizeof(bit_file_t));
 
-        if (bf == NULL)
+        if (bf == nullptr)
         {
             /* malloc failed */
             errno = ENOMEM;
@@ -123,7 +123,7 @@ int BitFileClose(bit_file_t *stream)
 {
     int returnValue = 0;
 
-    if (stream == NULL)
+    if (stream == nullptr)
     {
         return(EOF);
     }
@@ -149,11 +149,11 @@ int BitFileClose(bit_file_t *stream)
 
 FILE *BitFileToFILE(bit_file_t *stream)
 {
-    FILE *fp = NULL;
+    FILE *fp = nullptr;
 
-    if (stream == NULL)
+    if (stream == nullptr)
     {
-        return(NULL);
+        return(nullptr);
     }
 
     if ((stream->mode == BF_WRITE) || (stream->mode == BF_APPEND))
@@ -179,7 +179,7 @@ int BitFileFlushOutput(bit_file_t *stream, const unsigned char onesFill)
 {
     int returnValue;
 
-    if (stream == NULL)
+    if (stream == nullptr)
     {
         return(EOF);
     }
@@ -210,7 +210,7 @@ int BitFileGetChar(bit_file_t *stream)
     int returnValue;
     unsigned char tmp;
 
-    if (stream == NULL)
+    if (stream == nullptr)
     {
         return(EOF);
     }
@@ -243,7 +243,7 @@ int BitFilePutChar(const int c, bit_file_t *stream)
 {
     unsigned char tmp;
 
-    if (stream == NULL)
+    if (stream == nullptr)
     {
         return(EOF);
     }
@@ -275,7 +275,7 @@ int BitFileGetBit(bit_file_t *stream)
 {
     int returnValue;
 
-    if (stream == NULL)
+    if (stream == nullptr)
     {
         return(EOF);
     }
@@ -305,7 +305,7 @@ int BitFilePutBit(const int c, bit_file_t *stream)
 {
     int returnValue = c;
 
-    if (stream == NULL)
+    if (stream == nullptr)
     {
         return(EOF);
     }
@@ -341,7 +341,7 @@ int BitFileGetBits(bit_file_t *stream, void *bits, const unsigned int count)
 
     bytes = (unsigned char *)bits;
 
-    if ((stream == NULL) || (bits == NULL))
+    if ((stream == nullptr) || (bits == nullptr))
     {
         return(EOF);
     }
@@ -398,7 +398,7 @@ int BitFilePutBits(bit_file_t *stream, void *bits, const unsigned int count)
 
     bytes = (unsigned char *)bits;
 
-    if ((stream == NULL) || (bits == NULL))
+    if ((stream == nullptr) || (bits == nullptr))
     {
         return(EOF);
     }
@@ -445,12 +445,12 @@ int BitFilePutBits(bit_file_t *stream, void *bits, const unsigned int count)
 int BitFileGetBitsNum(bit_file_t *stream, void *bits, const unsigned int count,
     const size_t size)
 {
-    if ((stream == NULL) || (bits == NULL))
+    if ((stream == nullptr) || (bits == nullptr))
     {
         return EOF;
     }
 
-    if (NULL == stream->GetBitsNumFunc)
+    if (nullptr == stream->GetBitsNumFunc)
     {
         return -ENOTSUP;
     }
@@ -563,12 +563,12 @@ static int BitFileGetBitsBE(bit_file_t *stream, void *bits, const unsigned int c
 int BitFilePutBitsNum(bit_file_t *stream, void *bits, const unsigned int count,
     const size_t size)
 {
-    if ((stream == NULL) || (bits == NULL))
+    if ((stream == nullptr) || (bits == nullptr))
     {
         return EOF;
     }
 
-    if (NULL == stream->PutBitsNumFunc)
+    if (nullptr == stream->PutBitsNumFunc)
     {
         return ENOTSUP;
     }

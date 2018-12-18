@@ -10,24 +10,21 @@
 /* maximum that can be read before copy block is written */
 #define MAX_READ    (MAX_COPY + MIN_RUN - 1)
 
-int VPackBitsEncodeFile(FILE *inFile, FILE *outFile)
+int VPackBitsEncodeFile(FILE* inFile, FILE* outFile)
 {
-    int currChar;                       /* current character */
-    unsigned char charBuf[MAX_READ];    /* buffer of already read characters */
-    unsigned char count;                /* number of characters in a run */
+    int currChar;
+    unsigned char charBuf[MAX_READ];
+    unsigned char count;
 
-    /* validate input and output files */
-    if ((NULL == inFile) || (NULL == outFile))
+    if ((nullptr == inFile) || (nullptr == outFile))
     {
         errno = ENOENT;
         return -1;
     }
 
-    /* prime the read loop */
     currChar = fgetc(inFile);
     count = 0;
 
-    /* read input until there's nothing left */
     while (currChar != EOF)
     {
         charBuf[count] = (unsigned char)currChar;
@@ -142,19 +139,15 @@ int VPackBitsEncodeFile(FILE *inFile, FILE *outFile)
 
 int VPackBitsDecodeFile(FILE *inFile, FILE *outFile)
 {
-    int countChar;                      /* run/copy count */
-    int currChar;                       /* current character */
+    int countChar;
+    int currChar;
 
-    /* validate input and output files */
-    if ((NULL == inFile) || (NULL == outFile))
+    if ((nullptr == inFile) || (nullptr == outFile))
     {
         errno = ENOENT;
         return -1;
     }
 
-    /* decode inFile */
-
-    /* read input until there's nothing left */
     while ((countChar = fgetc(inFile)) != EOF)
     {
         countChar = (char)countChar;    /* force sign extension */
