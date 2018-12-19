@@ -2,8 +2,9 @@
 c:\users\andrei.kochuev\documents\github\encodingdecodingalgo\computergraphic\arithmeticсoding\arcode.cpp(183): warning C4244: '=': conversion from 'unsigned long' to 'probability_t', possible loss of data
 c:\users\andrei.kochuev\documents\github\encodingdecodingalgo\computergraphic\arithmeticсoding\arcode.cpp(184): warning C4244: '+=': conversion from 'unsigned long' to 'probability_t', possible loss of data
   bitfile.cpp
-c:\users\andrei.kochuev\documents\github\encodingdecodingalgo\computergraphic\arithmeticсoding\bitfile.cpp(523): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-c:\users\andrei.kochuev\documents\github\encodingdecodingalgo\computergraphic\arithmeticсoding\bitfile.cpp(641): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+c:\users\andrei.kochuev\documents\github\encodingdecodingalgo\computergraphic\arithmeticсoding\bitfile.cpp(470): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+c:\users\andrei.kochuev\documents\github\encodingdecodingalgo\computergraphic\arithmeticсoding\bitfile.cpp(567): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+  optlist.cpp
   sample.cpp
 c:\users\andrei.kochuev\documents\github\encodingdecodingalgo\computergraphic\arithmeticсoding\sample.cpp(10): warning C4326: return type of 'main' should be 'int' instead of 'void'
   Generating Code...

@@ -211,17 +211,12 @@ int BitFileGetChar(bit_file_t *stream)
     unsigned char tmp;
 
     if(stream == nullptr)
-    {
-        return(EOF);
-    }
+        return EOF;
 
     returnValue = fgetc(stream->fp);
 
     if(stream->bitCount == 0)
-    {
-        /* we can just get byte from file */
         return returnValue;
-    }
 
     /* we have some buffered bits to return too */
     if(returnValue != EOF)
@@ -235,7 +230,6 @@ int BitFileGetChar(bit_file_t *stream)
 
         returnValue = tmp;
     }
-
     return returnValue;
 }
 
@@ -244,29 +238,18 @@ int BitFilePutChar(const int c, bit_file_t *stream)
     unsigned char tmp;
 
     if(stream == nullptr)
-    {
-        return(EOF);
-    }
+        return EOF ;
 
     if(stream->bitCount == 0)
-    {
-        /* we can just put byte from file */
         return fputc(c, stream->fp);
-    }
 
-    /* figure out what to write */
     tmp = ((unsigned char)c) >> (stream->bitCount);
     tmp = tmp | ((stream->bitBuffer) << (8 - stream->bitCount));
 
     if(fputc(tmp, stream->fp) != EOF)
-    {
-        /* put remaining in buffer. count shouldn't change. */
         stream->bitBuffer = c;
-    }
     else
-    {
         return EOF;
-    }
 
     return tmp;
 }
@@ -276,9 +259,7 @@ int BitFileGetBit(bit_file_t *stream)
     int returnValue;
 
     if(stream == nullptr)
-    {
-        return(EOF);
-    }
+        return EOF;
 
     if(stream->bitCount == 0)
     {
@@ -294,7 +275,6 @@ int BitFileGetBit(bit_file_t *stream)
         }
     }
 
-    /* bit to return is msb in buffer */
     stream->bitCount--;
     returnValue = (stream->bitBuffer) >> (stream->bitCount);
 
@@ -304,29 +284,20 @@ int BitFileGetBit(bit_file_t *stream)
 int BitFilePutBit(const int c, bit_file_t *stream)
 {
     int returnValue = c;
-
     if(stream == nullptr)
-    {
-        return(EOF);
-    }
+        return EOF;
 
     stream->bitCount++;
     stream->bitBuffer <<= 1;
 
     if(c != 0)
-    {
         stream->bitBuffer |= 1;
-    }
 
-    /* write bit buffer if we have 8 bits */
     if(stream->bitCount == 8)
     {
         if(fputc(stream->bitBuffer, stream->fp) == EOF)
-        {
             returnValue = EOF;
-        }
 
-        /* reset buffer */
         stream->bitCount = 0;
         stream->bitBuffer = 0;
     }
@@ -334,17 +305,18 @@ int BitFilePutBit(const int c, bit_file_t *stream)
     return returnValue;
 }
 
-int BitFileGetBits(bit_file_t *stream, void *bits, const unsigned int count)
+int BitFileGetBits(bit_file_t* stream, void* bits, const unsigned int count)
 {
-    unsigned char *bytes, shifts;
-    int offset, remaining, returnValue;
+    unsigned char* bytes;
+    unsigned char shifts;
+    int offset;
+    int remaining;
+    int returnValue;
 
-    bytes = (unsigned char *)bits;
+    bytes = (unsigned char*)bits;
 
     if((stream == nullptr) || (bits == nullptr))
-    {
-        return(EOF);
-    }
+        return EOF;
 
     offset = 0;
     remaining = count;
@@ -353,11 +325,8 @@ int BitFileGetBits(bit_file_t *stream, void *bits, const unsigned int count)
     while(remaining >= 8)
     {
         returnValue = BitFileGetChar(stream);
-
         if(returnValue == EOF)
-        {
             return EOF;
-        }
 
         bytes[offset] = (unsigned char)returnValue;
         remaining -= 8;
@@ -366,42 +335,36 @@ int BitFileGetBits(bit_file_t *stream, void *bits, const unsigned int count)
 
     if(remaining != 0)
     {
-        /* read remaining bits */
         shifts = 8 - remaining;
         bytes[offset] = 0;
 
         while(remaining > 0)
         {
             returnValue = BitFileGetBit(stream);
-
             if(returnValue == EOF)
-            {
                 return EOF;
-            }
 
             bytes[offset] <<= 1;
             bytes[offset] |= (returnValue & 0x01);
             remaining--;
         }
-
-        /* shift last bits into position */
         bytes[offset] <<= shifts;
     }
-
     return count;
 }
 
-int BitFilePutBits(bit_file_t *stream, void *bits, const unsigned int count)
+int BitFilePutBits(bit_file_t* stream, void* bits, const unsigned int count)
 {
-    unsigned char *bytes, tmp;
-    int offset, remaining, returnValue;
+    unsigned char* bytes;
+    unsigned char tmp;
+    int offset; 
+    int remaining;
+    int returnValue;
 
-    bytes = (unsigned char *)bits;
+    bytes = (unsigned char*)bits;
 
     if((stream == nullptr) || (bits == nullptr))
-    {
         return(EOF);
-    }
 
     offset = 0;
     remaining = count;
@@ -410,11 +373,8 @@ int BitFilePutBits(bit_file_t *stream, void *bits, const unsigned int count)
     while(remaining >= 8)
     {
         returnValue = BitFilePutChar(bytes[offset], stream);
-
         if(returnValue == EOF)
-        {
             return EOF;
-        }
 
         remaining -= 8;
         offset++;
@@ -424,15 +384,12 @@ int BitFilePutBits(bit_file_t *stream, void *bits, const unsigned int count)
     {
         /* write remaining bits */
         tmp = bytes[offset];
-
         while(remaining > 0)
         {
             returnValue = BitFilePutBit((tmp & 0x80), stream);
 
             if(returnValue == EOF)
-            {
                 return EOF;
-            }
 
             tmp <<= 1;
             remaining--;
@@ -446,27 +403,24 @@ int BitFileGetBitsNum(bit_file_t *stream, void *bits, const unsigned int count,
     const size_t size)
 {
     if((stream == nullptr) || (bits == nullptr))
-    {
         return EOF;
-    }
 
     if(nullptr == stream->GetBitsNumFunc)
-    {
         return -ENOTSUP;
-    }
 
     /* call function that correctly handles endianess */
     return (stream->GetBitsNumFunc)(stream, bits, count, size);
 }
 
-static int BitFileGetBitsLE(bit_file_t *stream, void *bits,
-    const unsigned int count, const size_t size)
+static int BitFileGetBitsLE(bit_file_t* stream, void* bits, const unsigned int count, const size_t size)
 {
     unsigned char *bytes;
-    int offset, remaining, returnValue;
+    int offset;
+    int remaining;
+    int returnValue;
 
     (void)size;
-    bytes = (unsigned char *)bits;
+    bytes = (unsigned char*)bits;
     offset = 0;
     remaining = count;
 
@@ -474,11 +428,8 @@ static int BitFileGetBitsLE(bit_file_t *stream, void *bits,
     while(remaining >= 8)
     {
         returnValue = BitFileGetChar(stream);
-
         if(returnValue == EOF)
-        {
             return EOF;
-        }
 
         bytes[offset] = (unsigned char)returnValue;
         remaining -= 8;
@@ -491,11 +442,8 @@ static int BitFileGetBitsLE(bit_file_t *stream, void *bits,
         while(remaining > 0)
         {
             returnValue = BitFileGetBit(stream);
-
             if(returnValue == EOF)
-            {
                 return EOF;
-            }
 
             bytes[offset] <<= 1;
             bytes[offset] |= (returnValue & 0x01);
@@ -510,13 +458,12 @@ static int BitFileGetBitsLE(bit_file_t *stream, void *bits,
 static int BitFileGetBitsBE(bit_file_t *stream, void *bits, const unsigned int count, const size_t size)
 {
     unsigned char *bytes;
-    int offset, remaining, returnValue;
+    int offset;
+    int remaining;
+    int returnValue;
 
     if(count > (size * 8))
-    {
-        /* too many bits to read */
         return EOF;
-    }
 
     bytes = (unsigned char *)bits;
 
@@ -527,11 +474,8 @@ static int BitFileGetBitsBE(bit_file_t *stream, void *bits, const unsigned int c
     while(remaining >= 8)
     {
         returnValue = BitFileGetChar(stream);
-
         if(returnValue == EOF)
-        {
             return EOF;
-        }
 
         bytes[offset] = (unsigned char)returnValue;
         remaining -= 8;
@@ -544,59 +488,47 @@ static int BitFileGetBitsBE(bit_file_t *stream, void *bits, const unsigned int c
         while(remaining > 0)
         {
             returnValue = BitFileGetBit(stream);
-
             if(returnValue == EOF)
-            {
                 return EOF;
-            }
 
             bytes[offset] <<= 1;
             bytes[offset] |= (returnValue & 0x01);
             remaining--;
         }
-
     }
-
     return count;
 }
 
-int BitFilePutBitsNum(bit_file_t *stream, void *bits, const unsigned int count,
-    const size_t size)
+int BitFilePutBitsNum(bit_file_t *stream, void *bits, const unsigned int count, const size_t size)
 {
     if((stream == nullptr) || (bits == nullptr))
-    {
         return EOF;
-    }
 
     if(nullptr == stream->PutBitsNumFunc)
-    {
         return ENOTSUP;
-    }
 
     /* call function that correctly handles endianess */
     return (stream->PutBitsNumFunc)(stream, bits, count, size);
 }
 
-static int BitFilePutBitsLE(bit_file_t *stream, void *bits,
-    const unsigned int count, const size_t size)
+static int BitFilePutBitsLE(bit_file_t *stream, void *bits, const unsigned int count, const size_t size)
 {
-    unsigned char *bytes, tmp;
-    int offset, remaining, returnValue;
+    unsigned char* bytes;
+    unsigned char tmp;
+    int offset;
+    int remaining;
+    int returnValue;
 
     (void)size;
     bytes = (unsigned char *)bits;
     offset = 0;
     remaining = count;
 
-    /* write whole bytes */
     while(remaining >= 8)
     {
         returnValue = BitFilePutChar(bytes[offset], stream);
-
         if(returnValue == EOF)
-        {
             return EOF;
-        }
 
         remaining -= 8;
         offset++;
@@ -604,40 +536,34 @@ static int BitFilePutBitsLE(bit_file_t *stream, void *bits,
 
     if(remaining != 0)
     {
-        /* write remaining bits */
         tmp = bytes[offset];
         tmp <<= (8 - remaining);
 
         while(remaining > 0)
         {
             returnValue = BitFilePutBit((tmp & 0x80), stream);
-
             if(returnValue == EOF)
-            {
                 return EOF;
-            }
 
             tmp <<= 1;
             remaining--;
         }
     }
-
     return count;
 }
 
-static int BitFilePutBitsBE(bit_file_t *stream, void *bits,
-    const unsigned int count, const size_t size)
+static int BitFilePutBitsBE(bit_file_t* stream, void* bits, const unsigned int count, const size_t size)
 {
-    unsigned char *bytes, tmp;
-    int offset, remaining, returnValue;
+    unsigned char* bytes;
+    unsigned char tmp;
+    int offset;
+    int remaining;
+    int returnValue;
 
     if(count > (size * 8))
-    {
-        /* too many bits to write */
         return EOF;
-    }
 
-    bytes = (unsigned char *)bits;
+    bytes = (unsigned char*)bits;
     offset = size - 1;
     remaining = count;
 
@@ -647,9 +573,7 @@ static int BitFilePutBitsBE(bit_file_t *stream, void *bits,
         returnValue = BitFilePutChar(bytes[offset], stream);
 
         if(returnValue == EOF)
-        {
             return EOF;
-        }
 
         remaining -= 8;
         offset--;
@@ -664,22 +588,17 @@ static int BitFilePutBitsBE(bit_file_t *stream, void *bits,
         while(remaining > 0)
         {
             returnValue = BitFilePutBit((tmp & 0x80), stream);
-
             if(returnValue == EOF)
-            {
                 return EOF;
-            }
 
             tmp <<= 1;
             remaining--;
         }
     }
-
     return count;
 }
 
-static int BitFileNotSupported(bit_file_t *stream, void *bits,
-    const unsigned int count, const size_t size)
+static int BitFileNotSupported(bit_file_t* stream, void *bits, const unsigned int count, const size_t size)
 {
     (void)stream;
     (void)bits;

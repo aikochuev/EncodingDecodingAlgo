@@ -407,11 +407,11 @@ static int ReadHeader(bit_file_t *bfpIn, stats_t *stats)
         c = BitFileGetChar(bfpIn);
         count = 0;
 
-        if(BitFileGetBitsNum(bfpIn, &count, (PRECISION - 2), sizeof(probability_t)) == EOF)
+       /* if(BitFileGetBitsNum(bfpIn, &count, (PRECISION - 2), sizeof(probability_t)) == EOF)
         {
             fprintf(stderr, "Error: unexpected EOF\n");
             return -1;
-        }
+        }*/
 
         PrintDebug(("%02X\t%d\n", c, count));
 

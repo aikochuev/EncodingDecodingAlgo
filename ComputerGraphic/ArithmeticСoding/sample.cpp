@@ -37,9 +37,7 @@ void main(int argc, const char* argv[])
                 fclose(inFile);
 
                 if(outFile != nullptr)
-                {
                     fclose(outFile);
-                }
 
                 FreeOptList(optList);
                 exit(EXIT_FAILURE);
@@ -49,9 +47,7 @@ void main(int argc, const char* argv[])
                 perror("Opening Input File");
 
                 if(outFile != nullptr)
-                {
                     fclose(outFile);
-                }
 
                 FreeOptList(optList);
                 exit(EXIT_FAILURE);
@@ -66,9 +62,7 @@ void main(int argc, const char* argv[])
                 fclose(outFile);
 
                 if(inFile != nullptr)
-                {
                     fclose(inFile);
-                }
 
                 FreeOptList(optList);
                 exit(EXIT_FAILURE);
@@ -78,9 +72,7 @@ void main(int argc, const char* argv[])
                 perror("Opening Output File");
 
                 if(inFile != nullptr)
-                {
                     fclose(inFile);
-                }
 
                 FreeOptList(optList);
                 exit(EXIT_FAILURE);
