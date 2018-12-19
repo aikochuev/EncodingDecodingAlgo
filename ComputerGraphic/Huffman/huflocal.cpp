@@ -11,12 +11,12 @@ huffman_node_t *GenerateTreeFromFile(FILE *inFile)
     int c;
 
     /* allocate array of leaves for all possible characters */
-    for (c = 0; c < NUM_CHARS; c++)
+    for(c = 0; c < NUM_CHARS; c++)
     {
-        if ((huffmanArray[c] = AllocHuffmanNode(c)) == nullptr)
+        if((huffmanArray[c] = AllocHuffmanNode(c)) == nullptr)
         {
             /* allocation failed clear existing allocations */
-            for (c--; c >= 0; c--)
+            for(c--; c >= 0; c--)
             {
                 delete huffmanArray[c];
             }
@@ -29,9 +29,9 @@ huffman_node_t *GenerateTreeFromFile(FILE *inFile)
     huffmanArray[EOF_CHAR]->ignore = 0;
 
     /* count occurrence of each character */
-    while ((c = fgetc(inFile)) != EOF)
+    while((c = fgetc(inFile)) != EOF)
     {
-        if (huffmanArray[c]->count < COUNT_T_MAX)
+        if(huffmanArray[c]->count < COUNT_T_MAX)
         {
             /* increment count for character and include in tree */
             huffmanArray[c]->count++;
@@ -51,28 +51,16 @@ huffman_node_t *GenerateTreeFromFile(FILE *inFile)
     return huffmanTree;
 }
 
-huffman_node_t *AllocHuffmanNode(int value)
+huffman_node_t* AllocHuffmanNode(int value)
 {
-    huffman_node_t *ht;
-
-    ht = (huffman_node_t *)(malloc(sizeof(huffman_node_t)));
-
-    if (ht != nullptr)
-    {
-        ht->value = value;
-        ht->ignore = 1;         /* will be 0 if one is found */
-
-        /* at this point, the node is not part of a tree */
-        ht->count = 0;
-        ht->level = 0;
-        ht->left = nullptr;
-        ht->right = nullptr;
-        ht->parent = nullptr;
-    }
-    else
-    {
-        perror("Allocate Node");
-    }
+    huffman_node_t* ht = new huffman_node_t();
+    ht->value = value;
+    ht->ignore = 1;
+    ht->count = 0;
+    ht->level = 0;
+    ht->left = nullptr;
+    ht->right = nullptr;
+    ht->parent = nullptr;
 
     return ht;
 }
@@ -97,12 +85,12 @@ static huffman_node_t* AllocHuffmanCompositeNode(huffman_node_t *left, huffman_n
 
 void FreeHuffmanTree(huffman_node_t *ht)
 {
-    if (ht->left != nullptr)
+    if(ht->left != nullptr)
     {
         FreeHuffmanTree(ht->left);
     }
 
-    if (ht->right != nullptr)
+    if(ht->right != nullptr)
     {
         FreeHuffmanTree(ht->right);
     }
@@ -122,12 +110,12 @@ static int FindMinimumCount(huffman_node_t **ht, int elements)
     currentLevel = INT_MAX;
 
     /* sequentially search array */
-    for (i = 0; i < elements; i++)
+    for(i = 0; i < elements; i++)
     {
         /* check for lowest count (or equally as low, but not as deep) */
-        if ((ht[i] != nullptr) && (!ht[i]->ignore) &&
+        if((ht[i] != nullptr) && (!ht[i]->ignore) &&
             (ht[i]->count < currentCount ||
-                (ht[i]->count == currentCount && ht[i]->level < currentLevel)))
+            (ht[i]->count == currentCount && ht[i]->level < currentLevel)))
         {
             currentIndex = i;
             currentCount = ht[i]->count;
@@ -143,12 +131,12 @@ huffman_node_t *BuildHuffmanTree(huffman_node_t **ht, int elements)
     int min1, min2;     /* two nodes with the lowest count */
 
     /* keep looking until no more nodes can be found */
-    for (;;)
+    for(;;)
     {
         /* find node with lowest count */
         min1 = FindMinimumCount(ht, elements);
 
-        if (min1 == NONE)
+        if(min1 == NONE)
         {
             /* no more nodes to combine */
             break;
@@ -159,7 +147,7 @@ huffman_node_t *BuildHuffmanTree(huffman_node_t **ht, int elements)
         /* find node with second lowest count */
         min2 = FindMinimumCount(ht, elements);
 
-        if (min2 == NONE)
+        if(min2 == NONE)
         {
             /* no more nodes to combine */
             break;
@@ -168,7 +156,7 @@ huffman_node_t *BuildHuffmanTree(huffman_node_t **ht, int elements)
         ht[min2]->ignore = 1;       /* remove from consideration */
 
         /* combine nodes into a tree */
-        if ((ht[min1] = AllocHuffmanCompositeNode(ht[min1], ht[min2])) == nullptr)
+        if((ht[min1] = AllocHuffmanCompositeNode(ht[min1], ht[min2])) == nullptr)
         {
             return nullptr;
         }

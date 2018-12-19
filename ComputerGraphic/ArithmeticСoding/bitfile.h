@@ -7,7 +7,7 @@ typedef enum
 {
     BF_READ = 0,
     BF_WRITE = 1,
-    BF_APPEND= 2,
+    BF_APPEND = 2,
     BF_NO_MODE
 } BF_MODES;
 

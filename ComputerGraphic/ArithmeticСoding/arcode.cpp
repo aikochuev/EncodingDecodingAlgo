@@ -72,23 +72,23 @@ int ArEncodeFile(FILE* inFile, FILE* outFile, const model_t model)
     bit_file_t *bOutFile;
     stats_t stats;
 
-    if (nullptr == inFile)
+    if(nullptr == inFile)
         inFile = stdin;
 
-    if (outFile == nullptr)
+    if(outFile == nullptr)
         bOutFile = MakeBitFile(stdout, BF_WRITE);
     else
         bOutFile = MakeBitFile(outFile, BF_WRITE);
 
-    if (nullptr == bOutFile)
+    if(nullptr == bOutFile)
     {
         fprintf(stderr, "Error: Creating binary output file\n");
         return -1;
     }
 
-    if (MODEL_STATIC == model)
+    if(MODEL_STATIC == model)
     {
-        if (0 != BuildProbabilityRangeList(inFile, &stats))
+        if(0 != BuildProbabilityRangeList(inFile, &stats))
         {
             fclose(inFile);
             BitFileClose(bOutFile);
@@ -109,7 +109,7 @@ int ArEncodeFile(FILE* inFile, FILE* outFile, const model_t model)
     stats.upper = ~0;
     stats.underflowBits = 0;
 
-    while ((c = fgetc(inFile)) != EOF)
+    while((c = fgetc(inFile)) != EOF)
     {
         ApplySymbolRange(c, &stats, model);
         WriteEncodedBits(bOutFile, &stats);
@@ -130,11 +130,11 @@ static void SymbolCountToProbabilityRanges(stats_t *stats)
     stats->ranges[UPPER(EOF_CHAR)] = 1;
     stats->cumulativeProb++;
 
-    for (c = 1; c <= UPPER(EOF_CHAR); c++)
+    for(c = 1; c <= UPPER(EOF_CHAR); c++)
         stats->ranges[c] += stats->ranges[c - 1];
 
     PrintDebug(("Ranges:\n"));
-    for (c = 0; c < UPPER(EOF_CHAR); c++)
+    for(c = 0; c < UPPER(EOF_CHAR); c++)
         PrintDebug(("%02X\t%d\t%d\n", c, stats->ranges[LOWER(c)], stats->ranges[UPPER(c)]));
 }
 
@@ -145,16 +145,16 @@ static int BuildProbabilityRangeList(FILE *fpIn, stats_t *stats)
     unsigned long totalCount = 0;
     unsigned long rescaleValue;
 
-    if (fpIn == nullptr)
+    if(fpIn == nullptr)
         return -1;
 
     /* start with no symbols counted */
-    for (c = 0; c < EOF_CHAR; c++)
+    for(c = 0; c < EOF_CHAR; c++)
         countArray[c] = 0;
 
-    while ((c = fgetc(fpIn)) != EOF)
+    while((c = fgetc(fpIn)) != EOF)
     {
-        if (totalCount == ULONG_MAX)
+        if(totalCount == ULONG_MAX)
         {
             fprintf(stderr, "Error: file too large\n");
             return -1;
@@ -164,21 +164,21 @@ static int BuildProbabilityRangeList(FILE *fpIn, stats_t *stats)
         totalCount++;
     }
 
-    if (totalCount >= MAX_PROBABILITY)
+    if(totalCount >= MAX_PROBABILITY)
     {
         rescaleValue = (totalCount / MAX_PROBABILITY) + 1;
-        for (c = 0; c < EOF_CHAR; c++)
+        for(c = 0; c < EOF_CHAR; c++)
         {
-            if (countArray[c] > rescaleValue)
+            if(countArray[c] > rescaleValue)
                 countArray[c] /= rescaleValue;
-            else if (countArray[c] != 0)
+            else if(countArray[c] != 0)
                 countArray[c] = 1;
         }
     }
 
     stats->ranges[0] = 0;
     stats->cumulativeProb = 0;
-    for (c = 0; c < EOF_CHAR; c++)
+    for(c = 0; c < EOF_CHAR; c++)
     {
         stats->ranges[UPPER(c)] = countArray[c];
         stats->cumulativeProb += countArray[c];
@@ -197,7 +197,7 @@ static void WriteHeader(bit_file_t *bfpOut, stats_t *stats)
 
     for(c = 0; c <= (EOF_CHAR - 1); c++)
     {
-        if (stats->ranges[UPPER(c)] > previous)
+        if(stats->ranges[UPPER(c)] > previous)
         {
             BitFilePutChar((char)c, bfpOut);
             previous = (stats->ranges[UPPER(c)] - previous);
@@ -219,13 +219,13 @@ static void InitializeAdaptiveProbabilityRangeList(stats_t *stats)
     int c;
     stats->ranges[0] = 0;
 
-    for (c = 1; c <= UPPER(EOF_CHAR); c++)
+    for(c = 1; c <= UPPER(EOF_CHAR); c++)
         stats->ranges[c] = stats->ranges[c - 1] + 1;
 
     stats->cumulativeProb = UPPER(EOF_CHAR);
 
     PrintDebug(("Ranges:\n"));
-    for (c = 0; c < UPPER(EOF_CHAR); c++)
+    for(c = 0; c < UPPER(EOF_CHAR); c++)
     {
         PrintDebug(("%02X\t%d\t%d\n", c, stats->ranges[LOWER(c)],
             stats->ranges[UPPER(c)]));
@@ -253,26 +253,26 @@ static void ApplySymbolRange(int symbol, stats_t *stats, char model)
 
     stats->lower = stats->lower + (probability_t)rescaled;
 
-    if (!model)
+    if(!model)
     {
         stats->cumulativeProb++;
 
-        for (i = UPPER(symbol); i <= UPPER(EOF_CHAR); i++)
+        for(i = UPPER(symbol); i <= UPPER(EOF_CHAR); i++)
         {
             stats->ranges[i] += 1;
         }
 
-        if (stats->cumulativeProb >= MAX_PROBABILITY)
+        if(stats->cumulativeProb >= MAX_PROBABILITY)
         {
             stats->cumulativeProb = 0;
             original = 0;
 
-            for (i = 1; i <= UPPER(EOF_CHAR); i++)
+            for(i = 1; i <= UPPER(EOF_CHAR); i++)
             {
                 delta = stats->ranges[i] - original;
                 original = stats->ranges[i];
 
-                if (delta <= 2)
+                if(delta <= 2)
                     stats->ranges[i] = stats->ranges[i - 1] + 1;
                 else
                     stats->ranges[i] = stats->ranges[i - 1] + (delta / 2);
@@ -286,21 +286,21 @@ static void ApplySymbolRange(int symbol, stats_t *stats, char model)
 
 static void WriteEncodedBits(bit_file_t *bfpOut, stats_t *stats)
 {
-    for (;;)
+    for(;;)
     {
-        if ((stats->upper & MASK_BIT(0)) == (stats->lower & MASK_BIT(0)))
+        if((stats->upper & MASK_BIT(0)) == (stats->lower & MASK_BIT(0)))
         {
             /* MSBs match, write them to output file */
             BitFilePutBit((stats->upper & MASK_BIT(0)) != 0, bfpOut);
 
             /* we can write out underflow bits too */
-            while (stats->underflowBits > 0)
+            while(stats->underflowBits > 0)
             {
                 BitFilePutBit((stats->upper & MASK_BIT(0)) == 0, bfpOut);
                 stats->underflowBits--;
             }
         }
-        else if ((stats->lower & MASK_BIT(1)) && !(stats->upper & MASK_BIT(1)))
+        else if((stats->lower & MASK_BIT(1)) && !(stats->upper & MASK_BIT(1)))
         {
             stats->underflowBits += 1;
             stats->lower &= ~(MASK_BIT(0) | MASK_BIT(1));
@@ -308,7 +308,7 @@ static void WriteEncodedBits(bit_file_t *bfpOut, stats_t *stats)
         }
         else
         {
-            return ;
+            return;
         }
 
         stats->lower <<= 1;
@@ -320,7 +320,7 @@ static void WriteEncodedBits(bit_file_t *bfpOut, stats_t *stats)
 static void WriteRemaining(bit_file_t *bfpOut, stats_t *stats)
 {
     BitFilePutBit((stats->lower & MASK_BIT(1)) != 0, bfpOut);
-    for (stats->underflowBits++; stats->underflowBits > 0; stats->underflowBits--)
+    for(stats->underflowBits++; stats->underflowBits > 0; stats->underflowBits--)
         BitFilePutBit((stats->lower & MASK_BIT(1)) == 0, bfpOut);
 }
 
@@ -331,10 +331,10 @@ int ArDecodeFile(FILE *inFile, FILE *outFile, const model_t model)
     bit_file_t *bInFile;
     stats_t stats;
 
-    if (nullptr == outFile)
+    if(nullptr == outFile)
         outFile = stdout;
 
-    if (nullptr == inFile)
+    if(nullptr == inFile)
     {
         fprintf(stderr, "Error: Invalid input file\n");
         return -1;
@@ -342,16 +342,16 @@ int ArDecodeFile(FILE *inFile, FILE *outFile, const model_t model)
 
     bInFile = MakeBitFile(inFile, BF_READ);
 
-    if (nullptr == bInFile)
+    if(nullptr == bInFile)
     {
         fprintf(stderr, "Error: Unable to create binary input file\n");
         return -1;
     }
 
-    if (MODEL_STATIC == model)
+    if(MODEL_STATIC == model)
     {
         /* build probability ranges from header in file */
-        if (0 != ReadHeader(bInFile, &stats))
+        if(0 != ReadHeader(bInFile, &stats))
         {
             BitFileClose(bInFile);
             fclose(outFile);
@@ -368,14 +368,14 @@ int ArDecodeFile(FILE *inFile, FILE *outFile, const model_t model)
     InitializeDecoder(bInFile, &stats);
 
     /* decode one symbol at a time */
-    for (;;)
+    for(;;)
     {
         unscaled = GetUnscaledCode(&stats);
 
         if((c = GetSymbolFromProbability(unscaled, &stats)) == -1)
             break;
 
-        if (c == EOF_CHAR)
+        if(c == EOF_CHAR)
             break;
 
         fputc((char)c, outFile);
@@ -397,17 +397,17 @@ static int ReadHeader(bit_file_t *bfpIn, stats_t *stats)
     PrintDebug(("HEADER:\n"));
     stats->cumulativeProb = 0;
 
-    for (c = 0; c <= UPPER(EOF_CHAR); c++)
+    for(c = 0; c <= UPPER(EOF_CHAR); c++)
     {
         stats->ranges[UPPER(c)] = 0;
     }
 
-    for (;;)
+    for(;;)
     {
         c = BitFileGetChar(bfpIn);
         count = 0;
 
-        if (BitFileGetBitsNum(bfpIn, &count, (PRECISION - 2), sizeof(probability_t)) == EOF)
+        if(BitFileGetBitsNum(bfpIn, &count, (PRECISION - 2), sizeof(probability_t)) == EOF)
         {
             fprintf(stderr, "Error: unexpected EOF\n");
             return -1;
@@ -415,7 +415,7 @@ static int ReadHeader(bit_file_t *bfpIn, stats_t *stats)
 
         PrintDebug(("%02X\t%d\n", c, count));
 
-        if (count == 0)
+        if(count == 0)
             break;
 
         stats->ranges[UPPER(c)] = count;
@@ -431,7 +431,7 @@ static void InitializeDecoder(bit_file_t *bfpIn, stats_t *stats)
     int i;
     stats->code = 0;
 
-    for (i = 0; i < (int)PRECISION; i++)
+    for(i = 0; i < (int)PRECISION; i++)
     {
         stats->code <<= 1;
         if(BitFileGetBit(bfpIn) == 1)
@@ -464,16 +464,16 @@ static int GetSymbolFromProbability(probability_t probability, stats_t *stats)
     last = UPPER(EOF_CHAR);
     middle = last / 2;
 
-    while (last >= first)
+    while(last >= first)
     {
-        if (probability < stats->ranges[LOWER(middle)])
+        if(probability < stats->ranges[LOWER(middle)])
         {
             last = middle - 1;
             middle = first + ((last - first) / 2);
             continue;
         }
 
-        if (probability >= stats->ranges[UPPER(middle)])
+        if(probability >= stats->ranges[UPPER(middle)])
         {
             first = middle + 1;
             middle = first + ((last - first) / 2);
@@ -490,17 +490,17 @@ static void ReadEncodedBits(bit_file_t *bfpIn, stats_t *stats)
 {
     int nextBit;        /* next bit from encoded input */
 
-    for (;;)
+    for(;;)
     {
-        if ((stats->upper & MASK_BIT(0)) == (stats->lower & MASK_BIT(0)))
+        if((stats->upper & MASK_BIT(0)) == (stats->lower & MASK_BIT(0)))
         {
 
         }
-        else if ((stats->lower & MASK_BIT(1)) && !(stats->upper & MASK_BIT(1)))
+        else if((stats->lower & MASK_BIT(1)) && !(stats->upper & MASK_BIT(1)))
         {
 
-            stats->lower   &= ~(MASK_BIT(0) | MASK_BIT(1));
-            stats->upper  |= MASK_BIT(1);
+            stats->lower &= ~(MASK_BIT(0) | MASK_BIT(1));
+            stats->upper |= MASK_BIT(1);
             stats->code ^= MASK_BIT(1);
         }
         else
@@ -513,7 +513,7 @@ static void ReadEncodedBits(bit_file_t *bfpIn, stats_t *stats)
         stats->upper |= 1;
         stats->code <<= 1;
 
-        if ((nextBit = BitFileGetBit(bfpIn)) != EOF)
+        if((nextBit = BitFileGetBit(bfpIn)) != EOF)
             stats->code |= nextBit;
     }
 }

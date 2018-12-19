@@ -16,7 +16,7 @@ int VPackBitsEncodeFile(FILE* inFile, FILE* outFile)
     unsigned char charBuf[MAX_READ];
     unsigned char count;
 
-    if ((nullptr == inFile) || (nullptr == outFile))
+    if((nullptr == inFile) || (nullptr == outFile))
     {
         errno = ENOENT;
         return -1;
@@ -25,20 +25,20 @@ int VPackBitsEncodeFile(FILE* inFile, FILE* outFile)
     currChar = fgetc(inFile);
     count = 0;
 
-    while (currChar != EOF)
+    while(currChar != EOF)
     {
         charBuf[count] = (unsigned char)currChar;
 
         count++;
 
-        if (count >= MIN_RUN)
+        if(count >= MIN_RUN)
         {
             int i;
 
             /* check for run  charBuf[count - 1] .. charBuf[count - MIN_RUN]*/
-            for (i = 2; i <= MIN_RUN; i++)
+            for(i = 2; i <= MIN_RUN; i++)
             {
-                if (currChar != charBuf[count - i])
+                if(currChar != charBuf[count - i])
                 {
                     /* no run */
                     i = 0;
@@ -46,12 +46,12 @@ int VPackBitsEncodeFile(FILE* inFile, FILE* outFile)
                 }
             }
 
-            if (i != 0)
+            if(i != 0)
             {
                 /* we have a run write out buffer before run*/
                 int nextChar;
 
-                if (count > MIN_RUN)
+                if(count > MIN_RUN)
                 {
                     /* block size - 1 followed by contents */
                     fputc(count - MIN_RUN - 1, outFile);
@@ -63,10 +63,10 @@ int VPackBitsEncodeFile(FILE* inFile, FILE* outFile)
                 /* determine run length (MIN_RUN so far) */
                 count = MIN_RUN;
 
-                while ((nextChar = fgetc(inFile)) == currChar)
+                while((nextChar = fgetc(inFile)) == currChar)
                 {
                     count++;
-                    if (MAX_RUN == count)
+                    if(MAX_RUN == count)
                     {
                         /* run is at max length */
                         break;
@@ -77,7 +77,7 @@ int VPackBitsEncodeFile(FILE* inFile, FILE* outFile)
                 fputc((char)((int)(MIN_RUN - 1) - (int)(count)), outFile);
                 fputc(currChar, outFile);
 
-                if ((nextChar != EOF) && (count != MAX_RUN))
+                if((nextChar != EOF) && (count != MAX_RUN))
                 {
                     /* make run breaker start of next buffer */
                     charBuf[0] = nextChar;
@@ -91,7 +91,7 @@ int VPackBitsEncodeFile(FILE* inFile, FILE* outFile)
             }
         }
 
-        if (MAX_READ == count)
+        if(MAX_READ == count)
         {
             int i;
 
@@ -103,7 +103,7 @@ int VPackBitsEncodeFile(FILE* inFile, FILE* outFile)
             count = MAX_READ - MAX_COPY;
 
             /* copy excess to front of buffer */
-            for (i = 0; i < count; i++)
+            for(i = 0; i < count; i++)
             {
                 charBuf[i] = charBuf[MAX_COPY + i];
             }
@@ -113,9 +113,9 @@ int VPackBitsEncodeFile(FILE* inFile, FILE* outFile)
     }
 
     /* write out last buffer */
-    if (0 != count)
+    if(0 != count)
     {
-        if (count <= MAX_COPY)
+        if(count <= MAX_COPY)
         {
             /* write out entire copy buffer */
             fputc(count - 1, outFile);
@@ -142,28 +142,28 @@ int VPackBitsDecodeFile(FILE *inFile, FILE *outFile)
     int countChar;
     int currChar;
 
-    if ((nullptr == inFile) || (nullptr == outFile))
+    if((nullptr == inFile) || (nullptr == outFile))
     {
         errno = ENOENT;
         return -1;
     }
 
-    while ((countChar = fgetc(inFile)) != EOF)
+    while((countChar = fgetc(inFile)) != EOF)
     {
         countChar = (char)countChar;    /* force sign extension */
 
-        if (countChar < 0)
+        if(countChar < 0)
         {
             /* we have a run write out  2 - countChar copies */
             countChar = (MIN_RUN - 1) - countChar;
 
-            if (EOF == (currChar = fgetc(inFile)))
+            if(EOF == (currChar = fgetc(inFile)))
             {
                 fprintf(stderr, "Run block is too short!\n");
                 countChar = 0;
             }
 
-            while (countChar > 0)
+            while(countChar > 0)
             {
                 fputc(currChar, outFile);
                 countChar--;
@@ -172,9 +172,9 @@ int VPackBitsDecodeFile(FILE *inFile, FILE *outFile)
         else
         {
             /* we have a block of countChar + 1 symbols to copy */
-            for (countChar++; countChar > 0; countChar--)
+            for(countChar++; countChar > 0; countChar--)
             {
-                if ((currChar = fgetc(inFile)) != EOF)
+                if((currChar = fgetc(inFile)) != EOF)
                 {
                     fputc(currChar, outFile);
                 }

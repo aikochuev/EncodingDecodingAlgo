@@ -19,19 +19,19 @@ option_t *GetOptList(const int argc, const char* argv[], const char* options)
     option_t* tail = nullptr;
 
     /* loop through all of the command line arguments */
-    while (nextArg < argc)
+    while(nextArg < argc)
     {
         argIndex = 1;
 
-        while ((strlen(argv[nextArg]) > argIndex) && ('-' == argv[nextArg][0]))
+        while((strlen(argv[nextArg]) > argIndex) && ('-' == argv[nextArg][0]))
         {
             /* attempt to find a matching option */
             optIndex = MatchOpt(argv[nextArg][argIndex], options);
 
-            if (options[optIndex] == argv[nextArg][argIndex])
+            if(options[optIndex] == argv[nextArg][argIndex])
             {
                 /* we found the matching option */
-                if (nullptr == head)
+                if(nullptr == head)
                 {
                     head = MakeOpt(options[optIndex], nullptr, OL_NOINDEX);
                     tail = head;
@@ -42,18 +42,18 @@ option_t *GetOptList(const int argc, const char* argv[], const char* options)
                     tail = tail->next;
                 }
 
-                if (':' == options[optIndex + 1])
+                if(':' == options[optIndex + 1])
                 {
                     /* the option found should have a text arguement */
                     argIndex++;
 
-                    if (strlen(argv[nextArg]) > argIndex)
+                    if(strlen(argv[nextArg]) > argIndex)
                     {
                         /* no space between argument and option */
                         tail->argument = &(argv[nextArg][argIndex]);
                         tail->argIndex = nextArg;
                     }
-                    else if (nextArg < argc)
+                    else if(nextArg < argc)
                     {
                         /* there must be space between the argument option */
                         nextArg++;
@@ -89,7 +89,7 @@ void FreeOptList(option_t *list)
     option_t *head = list;
     list = nullptr;
     option_t *next = nullptr;
-    while (head != nullptr)
+    while(head != nullptr)
     {
         next = head->next;
         delete head;
@@ -103,14 +103,13 @@ static size_t MatchOpt(char argument, const char* options)
     size_t optIndex = 0;
 
     /* attempt to find a matching option */
-    while ((options[optIndex] != '\0') &&
+    while((options[optIndex] != '\0') &&
         (options[optIndex] != argument))
     {
         do
         {
             optIndex++;
-        }
-        while ((options[optIndex] != '\0') &&
+        } while((options[optIndex] != '\0') &&
             (':' == options[optIndex]));
     }
 
@@ -127,11 +126,11 @@ char *FindFileName(const char* fullPath)
     start = fullPath;
 
     /* find the first character after all file path delimiters */
-    for (i = 0; i < 3; i++)
+    for(i = 0; i < 3; i++)
     {
         tmp = strrchr(start, delim[i]);
 
-        if (tmp != nullptr)
+        if(tmp != nullptr)
         {
             start = tmp + 1;
         }

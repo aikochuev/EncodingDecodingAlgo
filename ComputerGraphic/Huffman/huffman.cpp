@@ -27,7 +27,7 @@ int HuffmanEncodeFile(FILE *inFile, FILE *outFile)
     int c;
 
     /* validate input and output files */
-    if ((nullptr == inFile) || (nullptr == outFile))
+    if((nullptr == inFile) || (nullptr == outFile))
     {
         errno = ENOENT;
         return -1;
@@ -35,14 +35,14 @@ int HuffmanEncodeFile(FILE *inFile, FILE *outFile)
 
     bOutFile = MakeBitFile(outFile, BF_WRITE);
 
-    if (nullptr == bOutFile)
+    if(nullptr == bOutFile)
     {
         perror("Making Output File a BitFile");
         return -1;
     }
 
     /* build tree */
-    if ((huffmanTree = GenerateTreeFromFile(inFile)) == nullptr)
+    if((huffmanTree = GenerateTreeFromFile(inFile)) == nullptr)
     {
         outFile = BitFileToFILE(bOutFile);
         return -1;
@@ -51,13 +51,13 @@ int HuffmanEncodeFile(FILE *inFile, FILE *outFile)
     /* build a list of codes for each symbol */
 
     /* initialize code list */
-    for (c = 0; c < NUM_CHARS; c++)
+    for(c = 0; c < NUM_CHARS; c++)
     {
         codeList[c].code = nullptr;
         codeList[c].codeLen = 0;
     }
 
-    if (0 != MakeCodeList(huffmanTree, codeList))
+    if(0 != MakeCodeList(huffmanTree, codeList))
     {
         outFile = BitFileToFILE(bOutFile);
         return -1;
@@ -84,9 +84,9 @@ int HuffmanEncodeFile(FILE *inFile, FILE *outFile)
         codeList[EOF_CHAR].codeLen);
 
     /* free the code list */
-    for (c = 0; c < NUM_CHARS; c++)
+    for(c = 0; c < NUM_CHARS; c++)
     {
-        if (codeList[c].code != nullptr)
+        if(codeList[c].code != nullptr)
         {
             BitArrayDestroy(codeList[c].code);
         }
@@ -108,7 +108,7 @@ int HuffmanDecodeFile(FILE *inFile, FILE *outFile)
     bit_file_t *bInFile;
 
     /* validate input and output files */
-    if ((nullptr == inFile) || (nullptr == outFile))
+    if((nullptr == inFile) || (nullptr == outFile))
     {
         errno = ENOENT;
         return -1;
@@ -116,19 +116,19 @@ int HuffmanDecodeFile(FILE *inFile, FILE *outFile)
 
     bInFile = MakeBitFile(inFile, BF_READ);
 
-    if (nullptr == bInFile)
+    if(nullptr == bInFile)
     {
         perror("Making Input File a BitFile");
         return -1;
     }
 
     /* allocate array of leaves for all possible characters */
-    for (i = 0; i < NUM_CHARS; i++)
+    for(i = 0; i < NUM_CHARS; i++)
     {
-        if ((huffmanArray[i] = AllocHuffmanNode(i)) == nullptr)
+        if((huffmanArray[i] = AllocHuffmanNode(i)) == nullptr)
         {
             /* allocation failed clear existing allocations */
-            for (i--; i >= 0; i--)
+            for(i--; i >= 0; i--)
             {
                 delete huffmanArray[i];
             }
@@ -139,9 +139,9 @@ int HuffmanDecodeFile(FILE *inFile, FILE *outFile)
     }
 
     /* populate leaves with frequency information from file header */
-    if (0 != ReadHeader(huffmanArray, bInFile))
+    if(0 != ReadHeader(huffmanArray, bInFile))
     {
-        for (i = 0; i < NUM_CHARS; i++)
+        for(i = 0; i < NUM_CHARS; i++)
         {
             delete huffmanArray[i];
         }
@@ -151,7 +151,7 @@ int HuffmanDecodeFile(FILE *inFile, FILE *outFile)
     }
 
     /* put array of leaves into a huffman tree */
-    if ((huffmanTree = BuildHuffmanTree(huffmanArray, NUM_CHARS)) == nullptr)
+    if((huffmanTree = BuildHuffmanTree(huffmanArray, NUM_CHARS)) == nullptr)
     {
         FreeHuffmanTree(huffmanTree);
         inFile = BitFileToFILE(bInFile);
@@ -161,10 +161,10 @@ int HuffmanDecodeFile(FILE *inFile, FILE *outFile)
     /* now we should have a tree that matches the tree used on the encode */
     currentNode = huffmanTree;
 
-    while ((c = BitFileGetBit(bInFile)) != EOF)
+    while((c = BitFileGetBit(bInFile)) != EOF)
     {
         /* traverse the tree finding matches for our characters */
-        if (c != 0)
+        if(c != 0)
         {
             currentNode = currentNode->right;
         }
@@ -173,10 +173,10 @@ int HuffmanDecodeFile(FILE *inFile, FILE *outFile)
             currentNode = currentNode->left;
         }
 
-        if (currentNode->value != COMPOSITE_NODE)
+        if(currentNode->value != COMPOSITE_NODE)
         {
             /* we've found a character */
-            if (currentNode->value == EOF_CHAR)
+            if(currentNode->value == EOF_CHAR)
             {
                 /* we've just read the EOF */
                 break;
@@ -210,19 +210,19 @@ static int MakeCodeList(huffman_node_t *ht, code_list_t *codeList)
     for(;;)
     {
         /* follow this branch all the way left */
-        while (ht->left != nullptr)
+        while(ht->left != nullptr)
         {
             BitArrayShiftLeft(code, 1);
             ht = ht->left;
             depth++;
         }
 
-        if (ht->value != COMPOSITE_NODE)
+        if(ht->value != COMPOSITE_NODE)
         {
             /* enter results in list */
             codeList[ht->value].codeLen = depth;
             codeList[ht->value].code = BitArrayDuplicate(code);
-            if (codeList[ht->value].code == nullptr)
+            if(codeList[ht->value].code == nullptr)
             {
                 perror("Unable to allocate bit array");
                 BitArrayDestroy(code);
@@ -233,9 +233,9 @@ static int MakeCodeList(huffman_node_t *ht, code_list_t *codeList)
             BitArrayShiftLeft(codeList[ht->value].code, EOF_CHAR - depth);
         }
 
-        while (ht->parent != nullptr)
+        while(ht->parent != nullptr)
         {
-            if (ht != ht->parent->right)
+            if(ht != ht->parent->right)
             {
                 /* try the parent's right */
                 BitArraySetBit(code, (EOF_CHAR - 1));
@@ -251,7 +251,7 @@ static int MakeCodeList(huffman_node_t *ht, code_list_t *codeList)
             }
         }
 
-        if (ht->parent == nullptr)
+        if(ht->parent == nullptr)
         {
             /* we're at the top with nowhere to go */
             break;
@@ -269,12 +269,12 @@ static void WriteHeader(huffman_node_t *ht, bit_file_t *bfp)
     for(;;)
     {
         /* follow this branch all the way left */
-        while (ht->left != nullptr)
+        while(ht->left != nullptr)
         {
             ht = ht->left;
         }
 
-        if ((ht->value != COMPOSITE_NODE) &&
+        if((ht->value != COMPOSITE_NODE) &&
             (ht->value != EOF_CHAR))
         {
             /* write symbol and count to header */
@@ -282,9 +282,9 @@ static void WriteHeader(huffman_node_t *ht, bit_file_t *bfp)
             BitFilePutBits(bfp, (void *)&(ht->count), 8 * sizeof(count_t));
         }
 
-        while (ht->parent != nullptr)
+        while(ht->parent != nullptr)
         {
-            if (ht != ht->parent->right)
+            if(ht != ht->parent->right)
             {
                 ht = ht->parent->right;
                 break;
@@ -296,7 +296,7 @@ static void WriteHeader(huffman_node_t *ht, bit_file_t *bfp)
             }
         }
 
-        if (ht->parent == nullptr)
+        if(ht->parent == nullptr)
         {
             /* we're at the top with nowhere to go */
             break;
@@ -317,11 +317,11 @@ static int ReadHeader(huffman_node_t **ht, bit_file_t *bfp)
     int c;
     int status = -1;        /* in case of premature EOF */
 
-    while ((c = BitFileGetChar(bfp)) != EOF)
+    while((c = BitFileGetChar(bfp)) != EOF)
     {
         BitFileGetBits(bfp, (void *)(&count), 8 * sizeof(count_t));
 
-        if ((count == 0) && (c == 0))
+        if((count == 0) && (c == 0))
         {
             /* we just read end of table marker */
             status = 0;
@@ -336,7 +336,7 @@ static int ReadHeader(huffman_node_t **ht, bit_file_t *bfp)
     ht[EOF_CHAR]->count = 1;
     ht[EOF_CHAR]->ignore = 0;
 
-    if (0 != status)
+    if(0 != status)
     {
         /* we hit EOF before we read a full header */
         fprintf(stderr, "error: malformed file header.\n");

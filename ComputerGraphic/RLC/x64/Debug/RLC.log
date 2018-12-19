@@ -1,4 +1,5 @@
-﻿  rle.cpp
+﻿  optlist.cpp
+  rle.cpp
   sample.cpp
 c:\users\andrei.kochuev\documents\github\encodingdecodingalgo\computergraphic\rlc\sample.cpp(21): warning C4326: return type of 'main' should be 'int' instead of 'void'
   vpackbits.cpp

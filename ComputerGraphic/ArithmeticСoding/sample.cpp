@@ -14,86 +14,86 @@ void main(int argc, const char* argv[])
     FILE* outFile = nullptr;
     bool encode = true;
     model_t model = MODEL_STATIC;
-    while (thisOpt != nullptr)
+    while(thisOpt != nullptr)
     {
         switch(thisOpt->option)
         {
-            case 'a':       /* adaptive model vs. static */
-                model = MODEL_ADAPTIVE;
-                break;
+        case 'a':       /* adaptive model vs. static */
+            model = MODEL_ADAPTIVE;
+            break;
 
-            case 'c':       /* compression mode */
-                encode = true;
-                break;
+        case 'c':       /* compression mode */
+            encode = true;
+            break;
 
-            case 'd':       /* decompression mode */
-                encode = false;
-                break;
+        case 'd':       /* decompression mode */
+            encode = false;
+            break;
 
-            case 'i':       /* input file name */
-                if (inFile != nullptr)
-                {
-                    fprintf(stderr, "Multiple input files not allowed.\n");
-                    fclose(inFile);
-
-                    if (outFile != nullptr)
-                    {
-                        fclose(outFile);
-                    }
-
-                    FreeOptList(optList);
-                    exit(EXIT_FAILURE);
-                }
-                else if ((inFile = fopen(thisOpt->argument, "rb")) == nullptr)
-                {
-                    perror("Opening Input File");
-
-                    if (outFile != nullptr)
-                    {
-                        fclose(outFile);
-                    }
-
-                    FreeOptList(optList);
-                    exit(EXIT_FAILURE);
-                }
-
-                break;
-
-            case 'o':       /* output file name */
-                if (outFile != nullptr)
-                {
-                    fprintf(stderr, "Multiple output files not allowed.\n");
-                    fclose(outFile);
-
-                    if (inFile != nullptr)
-                    {
-                        fclose(inFile);
-                    }
-
-                    FreeOptList(optList);
-                    exit(EXIT_FAILURE);
-                }
-                else if ((outFile = fopen(thisOpt->argument, "wb")) == nullptr)
-                {
-                    perror("Opening Output File");
-
-                    if (inFile != nullptr)
-                    {
-                        fclose(inFile);
-                    }
-
-                    FreeOptList(optList);
-                    exit(EXIT_FAILURE);
-                }
-
-                break;
-
-            case 'h':
-            case '?':
+        case 'i':       /* input file name */
+            if(inFile != nullptr)
             {
-                ShowUsage(argv[0]);
+                fprintf(stderr, "Multiple input files not allowed.\n");
+                fclose(inFile);
+
+                if(outFile != nullptr)
+                {
+                    fclose(outFile);
+                }
+
                 FreeOptList(optList);
+                exit(EXIT_FAILURE);
             }
+            else if((inFile = fopen(thisOpt->argument, "rb")) == nullptr)
+            {
+                perror("Opening Input File");
+
+                if(outFile != nullptr)
+                {
+                    fclose(outFile);
+                }
+
+                FreeOptList(optList);
+                exit(EXIT_FAILURE);
+            }
+
+            break;
+
+        case 'o':       /* output file name */
+            if(outFile != nullptr)
+            {
+                fprintf(stderr, "Multiple output files not allowed.\n");
+                fclose(outFile);
+
+                if(inFile != nullptr)
+                {
+                    fclose(inFile);
+                }
+
+                FreeOptList(optList);
+                exit(EXIT_FAILURE);
+            }
+            else if((outFile = fopen(thisOpt->argument, "wb")) == nullptr)
+            {
+                perror("Opening Output File");
+
+                if(inFile != nullptr)
+                {
+                    fclose(inFile);
+                }
+
+                FreeOptList(optList);
+                exit(EXIT_FAILURE);
+            }
+
+            break;
+
+        case 'h':
+        case '?':
+        {
+            ShowUsage(argv[0]);
+            FreeOptList(optList);
+        }
         }
 
         optList = thisOpt->next;
@@ -101,25 +101,25 @@ void main(int argc, const char* argv[])
         thisOpt = optList;
     }
 
-    if (nullptr == inFile)
+    if(nullptr == inFile)
     {
         fprintf(stderr, "Input file must be provided\n");
         ShowUsage(argv[0]);
 
-        if (outFile != nullptr)
+        if(outFile != nullptr)
             fclose(outFile);
 
-        exit (EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
-    else if (nullptr == outFile)
+    else if(nullptr == outFile)
     {
         fprintf(stderr, "Input file must be provided\n");
         ShowUsage(argv[0]);
         fclose(inFile);
-        exit (EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
 
-    if (encode)
+    if(encode)
         ArEncodeFile(inFile, outFile, model);
     else
         ArDecodeFile(inFile, outFile, model);

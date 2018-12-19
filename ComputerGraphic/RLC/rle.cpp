@@ -9,7 +9,7 @@ int RleEncodeFile(FILE* inFile, FILE* outFile)
     int prevChar;
     unsigned char count;
 
-    if ((nullptr == inFile) || (nullptr == outFile))
+    if((nullptr == inFile) || (nullptr == outFile))
     {
         errno = ENOENT;
         return -1;
@@ -18,22 +18,22 @@ int RleEncodeFile(FILE* inFile, FILE* outFile)
     prevChar = EOF;
     count = 0;
 
-    while ((currChar = fgetc(inFile)) != EOF)
+    while((currChar = fgetc(inFile)) != EOF)
     {
         fputc(currChar, outFile);
 
-        if (currChar == prevChar)
+        if(currChar == prevChar)
         {
             /* we have a run.  count run length */
             count = 0;
 
-            while ((currChar = fgetc(inFile)) != EOF)
+            while((currChar = fgetc(inFile)) != EOF)
             {
-                if (currChar == prevChar)
+                if(currChar == prevChar)
                 {
                     count++;
 
-                    if (count == UCHAR_MAX)
+                    if(count == UCHAR_MAX)
                     {
                         /* count is as long as it can get */
                         fputc(count, outFile);
@@ -59,7 +59,7 @@ int RleEncodeFile(FILE* inFile, FILE* outFile)
             prevChar = currChar;
         }
 
-        if (currChar == EOF)
+        if(currChar == EOF)
         {
             /* run ended because of EOF */
             fputc(count, outFile);
@@ -76,7 +76,7 @@ int RleDecodeFile(FILE *inFile, FILE *outFile)
     int prevChar;
     unsigned char count;
 
-    if ((nullptr == inFile) || (nullptr == outFile))
+    if((nullptr == inFile) || (nullptr == outFile))
     {
         errno = ENOENT;
         return -1;
@@ -84,16 +84,16 @@ int RleDecodeFile(FILE *inFile, FILE *outFile)
 
     prevChar = EOF;
 
-    while ((currChar = fgetc(inFile)) != EOF)
+    while((currChar = fgetc(inFile)) != EOF)
     {
         fputc(currChar, outFile);
 
         /* check for run */
-        if (currChar == prevChar)
+        if(currChar == prevChar)
         {
             /* we have a run.  write it out. */
             count = fgetc(inFile);
-            while (count > 0)
+            while(count > 0)
             {
                 fputc(currChar, outFile);
                 count--;

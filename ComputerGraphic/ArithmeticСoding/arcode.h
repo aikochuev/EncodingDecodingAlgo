@@ -7,7 +7,7 @@ typedef enum
     MODEL_STATIC = 1
 } model_t;
 
- /* encode/decode routines from inFile to outFile.  returns 0 on success */
+/* encode/decode routines from inFile to outFile.  returns 0 on success */
 int ArEncodeFile(FILE *inFile, FILE *outFile, const model_t model);
 int ArDecodeFile(FILE *inFile, FILE *outFile, const model_t model);
 

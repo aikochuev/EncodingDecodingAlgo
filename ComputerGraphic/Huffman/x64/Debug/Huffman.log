@@ -1,2 +1,8 @@
 ﻿  bitarray.cpp
+  bitfile.cpp
+  huffman.cpp
+  huflocal.cpp
+  optlist.cpp
+  sample.cpp
+  Generating Code...
   Huffman.vcxproj -> C:\Users\andrei.kochuev\Documents\GitHub\EncodingDecodingAlgo\ComputerGraphic\x64\Debug\Huffman.exe
