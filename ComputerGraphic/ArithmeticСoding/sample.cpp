@@ -13,24 +13,22 @@ void main(int argc, const char* argv[])
     FILE* inFile = nullptr;
     FILE* outFile = nullptr;
     bool encode = true;
-    model_t model = MODEL_STATIC;
     while(thisOpt != nullptr)
     {
         switch(thisOpt->option)
         {
-        case 'a':       /* adaptive model vs. static */
-            model = MODEL_ADAPTIVE;
-            break;
-
-        case 'c':       /* compression mode */
+        case 'c':
+        {
             encode = true;
             break;
-
-        case 'd':       /* decompression mode */
+        }
+        case 'd':
+        {
             encode = false;
             break;
-
-        case 'i':       /* input file name */
+        }
+        case 'i':
+        {
             if(inFile != nullptr)
             {
                 fprintf(stderr, "Multiple input files not allowed.\n");
@@ -45,17 +43,16 @@ void main(int argc, const char* argv[])
             else if((inFile = fopen(thisOpt->argument, "rb")) == nullptr)
             {
                 perror("Opening Input File");
-
                 if(outFile != nullptr)
                     fclose(outFile);
 
                 FreeOptList(optList);
                 exit(EXIT_FAILURE);
             }
-
             break;
-
-        case 'o':       /* output file name */
+        }
+        case 'o':
+        {
             if(outFile != nullptr)
             {
                 fprintf(stderr, "Multiple output files not allowed.\n");
@@ -77,9 +74,8 @@ void main(int argc, const char* argv[])
                 FreeOptList(optList);
                 exit(EXIT_FAILURE);
             }
-
             break;
-
+        }
         case 'h':
         case '?':
         {
@@ -87,7 +83,6 @@ void main(int argc, const char* argv[])
             FreeOptList(optList);
         }
         }
-
         optList = thisOpt->next;
         delete thisOpt;
         thisOpt = optList;
@@ -112,15 +107,15 @@ void main(int argc, const char* argv[])
     }
 
     if(encode)
-        ArEncodeFile(inFile, outFile, model);
+        ArEncodeFile(inFile, outFile);
     else
-        ArDecodeFile(inFile, outFile, model);
+        ArDecodeFile(inFile, outFile);
 
     fclose(inFile);
     fclose(outFile);
 }
 
-static void ShowUsage(const char *progName)
+static void ShowUsage(const char* progName)
 {
     printf("Usage: %s <options>\n\n", FindFileName(progName));
     printf("options:\n");
