@@ -1,5 +1,10 @@
-﻿  sample.cpp
+﻿  pch.cpp
+  rle.cpp
+  sample.cpp
+c:\users\kochu\documents\github\encodingdecodingalgo\computergraphic\rlc\sample.cpp(9): warning C4326: return type of 'main' should be 'int' instead of 'void'
   Generating code
-  All 15 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  261 of 261 functions (100.0%) were compiled.
+    255 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
-  RLC.vcxproj -> C:\Users\andrei.kochuev\Documents\GitHub\EncodingDecodingAlgo\ComputerGraphic\x64\Release\RLC.exe
+  RLC.vcxproj -> C:\Users\kochu\Documents\GitHub\EncodingDecodingAlgo\ComputerGraphic\x64\Release\RLC.exe

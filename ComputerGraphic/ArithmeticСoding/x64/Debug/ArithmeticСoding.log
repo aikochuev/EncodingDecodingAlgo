@@ -1,8 +1,3 @@
-﻿  bitfile.cpp
-c:\users\kochu\documents\github\encodingdecodingalgo\computergraphic\arithmeticсoding\bitfile.cpp(322): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-c:\users\kochu\documents\github\encodingdecodingalgo\computergraphic\arithmeticсoding\bitfile.cpp(403): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-  optlist.cpp
-  sample.cpp
-c:\users\kochu\documents\github\encodingdecodingalgo\computergraphic\arithmeticсoding\sample.cpp(10): warning C4326: return type of 'main' should be 'int' instead of 'void'
-  Generating Code...
+﻿  sample.cpp
+c:\users\kochu\documents\github\encodingdecodingalgo\computergraphic\arithmeticсoding\sample.cpp(8): warning C4326: return type of 'main' should be 'int' instead of 'void'
   ArithmeticСoding.vcxproj -> C:\Users\kochu\Documents\GitHub\EncodingDecodingAlgo\ComputerGraphic\x64\Debug\ArithmeticСoding.exe

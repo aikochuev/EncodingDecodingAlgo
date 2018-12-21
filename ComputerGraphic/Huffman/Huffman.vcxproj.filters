@@ -30,9 +30,6 @@
     <ClInclude Include="huflocal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="optlist.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -51,9 +48,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="huffman.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="optlist.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

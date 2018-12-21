@@ -153,13 +153,11 @@
   <ItemGroup>
     <ClInclude Include="arcode.h" />
     <ClInclude Include="bitfile.h" />
-    <ClInclude Include="optlist.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="arcode.cpp" />
     <ClCompile Include="bitfile.cpp" />
-    <ClCompile Include="optlist.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
