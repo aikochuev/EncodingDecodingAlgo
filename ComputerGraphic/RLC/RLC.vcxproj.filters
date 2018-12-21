@@ -35,9 +35,6 @@
     <ClCompile Include="sample.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="vpackbits.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="optlist.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

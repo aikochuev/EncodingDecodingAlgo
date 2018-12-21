@@ -1,4 +1,3 @@
-﻿  huffman.cpp
-  huflocal.cpp
-  Generating Code...
-  Huffman.vcxproj -> C:\Users\kochu\Documents\GitHub\EncodingDecodingAlgo\ComputerGraphic\x64\Debug\Huffman.exe
+﻿  sample.cpp
+c:\users\kochu\documents\github\encodingdecodingalgo\computergraphic\huffman\sample.cpp(12): warning C4326: return type of 'main' should be 'int' instead of 'void'
+c:\users\kochu\documents\github\encodingdecodingalgo\computergraphic\huffman\sample.cpp(26): error C2143: syntax error: missing ';' before 'break'

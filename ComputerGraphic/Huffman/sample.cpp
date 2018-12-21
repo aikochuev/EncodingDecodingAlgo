@@ -6,12 +6,6 @@
 #include <errno.h>
 #include "huffman.h"
 
-typedef enum
-{
-    COMPRESS,
-    DECOMPRESS
-} mode_t;
-
 static void ShowUsage(FILE* stream, const char* progPath);
 
 void main(int argc, const char* argv[])
@@ -21,19 +15,19 @@ void main(int argc, const char* argv[])
 
     FILE* inFile = nullptr;
     FILE* outFile = nullptr;
-    mode_t mode;
+    bool encode = true;
     while(thisOpt != nullptr)
     {
         switch(thisOpt->option)
         {
         case 'c':
         {
-            mode = COMPRESS;
+            encode = true;
             break;
         }
         case 'd':
         {
-            mode = DECOMPRESS;
+            encode = false;
             break;
         }
         case 'i':
@@ -100,7 +94,7 @@ void main(int argc, const char* argv[])
         ShowUsage(stderr, argv[0]);
     }
 
-    if(mode == COMPRESS)
+    if(encode)
         HuffmanEncodeFile(inFile, outFile);
     else
         HuffmanDecodeFile(inFile, outFile);

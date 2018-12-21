@@ -5,43 +5,31 @@
 #include <errno.h>
 #include "rle.h"
 
-typedef enum
-{
-    mode_none = 0,
-    mode_encode_normal = 1,
-    mode_decode_normal = (1 << 1),
-    mode_packbits = (1 << 2),
-    mode_encode_packbits = (1 << 2) | 1,
-    mode_decode_packbits = (1 << 2) | (1 << 1)
-} mode_t;
-
 static void ShowUsage(const char* progName);
 
 void main(int argc, const char* argv[])
 {
     FILE* inFile = nullptr;
     FILE* outFile = nullptr;
-
-    option_t* optList = GetOptList(argc, argv, "cvdni:o:h?");
+    option_t* optList = GetOptList(argc, argv, "cdni:o:h?");
     option_t* thisOpt = optList;
-    int mode = mode_none;
+    bool encode = true;
     while(thisOpt != nullptr)
     {
         switch(thisOpt->option)
         {
-        case 'c':       /* compression mode */
-            mode |= mode_encode_normal;
+        case 'c':
+        {
+            encode = true;
             break;
-
-        case 'd':       /* decompression mode */
-            mode |= mode_decode_normal;
+        }
+        case 'd':
+        {
+            encode = false;
             break;
-
-        case 'v':       /* use packbits variant */
-            mode |= mode_packbits;
-            break;
-
-        case 'i':       /* input file name */
+        }
+        case 'i':
+        {
             if(inFile != nullptr)
             {
                 fprintf(stderr, "Multiple input files not allowed.\n");
@@ -62,8 +50,9 @@ void main(int argc, const char* argv[])
                 FreeOptList(optList);
             }
             break;
-
-        case 'o':       /* output file name */
+        }
+        case 'o':
+        {
             if(outFile != nullptr)
             {
                 fprintf(stderr, "Multiple output files not allowed.\n");
@@ -84,11 +73,13 @@ void main(int argc, const char* argv[])
                 FreeOptList(optList);
             }
             break;
-
+        }
         case 'h':
         case '?':
+        {
             ShowUsage(argv[0]);
             FreeOptList(optList);
+        }
         }
 
         optList = thisOpt->next;
@@ -96,7 +87,6 @@ void main(int argc, const char* argv[])
         thisOpt = optList;
     }
 
-    /* validate command line */
     if(inFile == nullptr)
     {
         fprintf(stderr, "Input file must be provided\n");
@@ -112,28 +102,10 @@ void main(int argc, const char* argv[])
         delete inFile;
     }
 
-    switch(mode)
-    {
-    case mode_encode_normal:
+    if(encode)
         RleEncodeFile(inFile, outFile);
-        break;
-
-    case mode_decode_normal:
+    else
         RleDecodeFile(inFile, outFile);
-        break;
-
-    case mode_encode_packbits:
-        VPackBitsEncodeFile(inFile, outFile);
-        break;
-
-    case mode_decode_packbits:
-        VPackBitsDecodeFile(inFile, outFile);
-        break;
-
-    default:
-        fprintf(stderr, "Illegal encoding/decoding option\n");
-        ShowUsage(argv[0]);
-    }
 
     fclose(inFile);
     fclose(outFile);
