@@ -5,4 +5,4 @@
 int HuffmanEncodeFile(FILE* inFile, FILE* outFile);
 int HuffmanDecodeFile(FILE* inFile, FILE* outFile);
 
-#endif /* _HUFFMAN_H_ */
+#endif

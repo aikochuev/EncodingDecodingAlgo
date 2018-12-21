@@ -3,7 +3,6 @@
 
 #include <limits.h>
 
-/* use preprocessor to verify type lengths */
 #if (UCHAR_MAX != 0xFF)
 #error This program expects unsigned char to be 1 byte
 #endif
@@ -36,9 +35,9 @@ typedef struct huffman_node_t
 
 #define max(a, b) ((a)>(b)?(a):(b))
 
-huffman_node_t* GenerateTreeFromFile(FILE *inFile);
-huffman_node_t* BuildHuffmanTree(huffman_node_t **ht, int elements);
+huffman_node_t* GenerateTreeFromFile(FILE* inFile);
+huffman_node_t* BuildHuffmanTree(huffman_node_t** ht, int elements);
 huffman_node_t* AllocHuffmanNode(int value);
-void FreeHuffmanTree(huffman_node_t *ht);
+void FreeHuffmanTree(huffman_node_t* ht);
 
-#endif  /* define _HUFFMAN_LOCAL_H */
+#endif

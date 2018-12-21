@@ -14,7 +14,7 @@ typedef enum
 
 static void ShowUsage(FILE* stream, const char* progPath);
 
-int main(int argc, const char* argv[])
+void main(int argc, const char* argv[])
 {
     option_t* optList = GetOptList(argc, argv, "cdni:o:h?");
     option_t* thisOpt = optList;
@@ -26,15 +26,18 @@ int main(int argc, const char* argv[])
     {
         switch(thisOpt->option)
         {
-        case 'c':       /* compression mode */
+        case 'c':
+        {
             mode = COMPRESS;
             break;
-
-        case 'd':       /* decompression mode */
+        }
+        case 'd':
+        {
             mode = DECOMPRESS;
             break;
-
-        case 'i':       /* input file name */
+        }
+        case 'i':
+        {
             if(inFile != nullptr)
             {
                 fprintf(stderr, "Multiple input files not allowed.\n");
@@ -44,7 +47,6 @@ int main(int argc, const char* argv[])
                     fclose(outFile);
 
                 FreeOptList(optList);
-                return EINVAL;
             }
             else if((inFile = fopen(thisOpt->argument, "rb")) == nullptr)
             {
@@ -54,11 +56,11 @@ int main(int argc, const char* argv[])
                     fclose(outFile);
 
                 FreeOptList(optList);
-                return errno;
             }
             break;
-
-        case 'o':       /* output file name */
+        }
+        case 'o':
+        {
             if(outFile != nullptr)
             {
                 fprintf(stderr, "Multiple output files not allowed.\n");
@@ -68,7 +70,6 @@ int main(int argc, const char* argv[])
                     fclose(inFile);
 
                 FreeOptList(optList);
-                return EINVAL;
             }
             else if((outFile = fopen(thisOpt->argument, "wb")) == nullptr)
             {
@@ -78,62 +79,37 @@ int main(int argc, const char* argv[])
                     fclose(inFile);
 
                 FreeOptList(optList);
-                return errno;
             }
             break;
-
+        }
         case 'h':
         case '?':
+        {
             ShowUsage(stdout, argv[0]);
             FreeOptList(optList);
-            return 0;
+        }
         }
         optList = thisOpt->next;
         delete thisOpt;
         thisOpt = optList;
     }
 
-    /* validate command line */
     if((inFile == nullptr) || (outFile == nullptr))
     {
         fprintf(stderr, "Input and output files must be provided\n\n");
         ShowUsage(stderr, argv[0]);
-        return EINVAL;
     }
 
-    /* execute selected function */
-    int status;
-    switch(mode)
-    {
-    case COMPRESS:
-        status = HuffmanEncodeFile(inFile, outFile);
-        break;
+    if(mode == COMPRESS)
+        HuffmanEncodeFile(inFile, outFile);
+    else
+        HuffmanDecodeFile(inFile, outFile);
 
-    case DECOMPRESS:
-        status = HuffmanDecodeFile(inFile, outFile);
-        break;
-
-    default:        /* error case */
-        status = 0;
-        break;
-    }
-
-    /* clean up*/
     fclose(inFile);
     fclose(outFile);
-
-    if(0 == status)
-    {
-        return 0;
-    }
-    else
-    {
-        perror("");
-        return errno;
-    }
 }
 
-static void ShowUsage(FILE *stream, const char *progPath)
+static void ShowUsage(FILE* stream, const char* progPath)
 {
     fprintf(stream, "Usage: %s <options>\n\n", FindFileName(progPath));
     fprintf(stream, "options:\n");
