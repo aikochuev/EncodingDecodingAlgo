@@ -11,8 +11,11 @@ void main(int argc, const char* argv[])
 
     std::experimental::filesystem::path filePath = argv[1];
     std::string ext = filePath.extension().string();
-    bool encode = ext.compare(".Arc") != 0;
 
+    if(ext.compare(".Huffman") == 0 || ext.compare(".Rlc") == 0)
+        return;
+
+    bool encode = ext.compare(".Arc") != 0;
     FILE* inFile = fopen(filePath.string().c_str(), "rb");
     if(encode)
         filePath.replace_extension(".Arc");
